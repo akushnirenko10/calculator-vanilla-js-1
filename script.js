@@ -105,6 +105,18 @@ class Calculator {
     }
     this.updateDisplay();
   }
+
+  toggleSign() {
+    if (this.currentOperand === "0" || this.currentOperand === "") return;
+
+    if (this.currentOperand.startsWith("-")) {
+      this.currentOperand = this.currentOperand.slice(1);
+    } else {
+      this.currentOperand = "-" + this.currentOperand;
+    }
+
+    this.updateDisplay();
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -122,6 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (button.classList.contains("btn-clear")) {
       calculator.clear();
+    } else if (button.classList.contains("btn-toggle-sign")) {
+      calculator.toggleSign();
     } else if (button.classList.contains("btn-back")) {
       calculator.delete();
     } else if (button.classList.contains("btn-equal")) {
@@ -138,6 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       calculator.appendNumber(buttonText);
     }
+
+    button.blur();
   });
 
   document.addEventListener("keydown", (event) => {
@@ -155,6 +171,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (event.key === "Escape") {
       calculator.clear();
+    }
+
+    if (event.key === "F9") {
+      event.preventDefault();
+      calculator.toggleSign();
     }
 
     if (["+", "-", "/", "*"].includes(event.key)) {
