@@ -119,4 +119,26 @@ document.addEventListener("DOMContentLoaded", () => {
       calculator.appendNumber(buttonText);
     }
   });
+
+  document.addEventListener("keydown", (event) => {
+    if ((event.key >= "0" && event.key <= "9") || event.key === ".") {
+      calculator.appendNumber(event.key);
+    }
+
+    if (event.key === "Enter" || event.key === "=") {
+      calculator.compute();
+    }
+
+    if (event.key === "Backspace") {
+      calculator.delete();
+    }
+
+    if (event.key === "Escape") {
+      calculator.clear();
+    }
+
+    if (["+", "-", "/", "*"].includes(event.key)) {
+      calculator.chooseOperation(event.key);
+    }
+  });
 });
