@@ -1,24 +1,32 @@
 class Calculator {
-  constructor(displayElement) {
+  constructor(displayElement, historyElement) {
     this.displayElement = displayElement;
+    this.historyElement = historyElement;
     this.clear();
   }
 
   clear() {
     this.currentOperand = "0";
     this.previousOperand = "";
-    this.opearation = undefined;
+    this.operation = undefined;
     this.updateDisplay();
   }
 
   updateDisplay() {
-    this.displayElement.innerText = this.currentOperand;
+    if (this.operation !== undefined) {
+      this.historyElement.innerText =
+        this.previousOperand + " " + this.operation;
+    } else {
+      this.historyElement.innerText = "";
+    }
+
+    this.displayElement.innerText = this.currentOperand || "0";
   }
 
   appendNumber(number) {
     if (number === "." && this.currentOperand.includes(".")) return;
 
-    if (this.currentOperand === "0" && this.currentOperand !== ".") {
+    if (this.currentOperand === "0" && number !== ".") {
       this.currentOperand = number.toString();
     } else {
       this.currentOperand = this.currentOperand.toString() + number.toString();
@@ -28,7 +36,13 @@ class Calculator {
   }
 
   chooseOperation(operation) {
-    if (this.currentOperand === "") return;
+    if (this.currentOperand === "") {
+      if (this.previousOperand !== "") {
+        this.operation = operation;
+        this.updateDisplay();
+      }
+      return;
+    }
 
     if (this.previousOperand !== "") {
       this.compute();
@@ -36,7 +50,8 @@ class Calculator {
 
     this.operation = operation;
     this.previousOperand = this.currentOperand;
-    this.currentOperand = "0";
+    this.currentOperand = "";
+    this.updateDisplay();
   }
 
   compute() {
@@ -79,7 +94,11 @@ class Calculator {
   }
 
   delete() {
-    if (this.currentOperand === "Error!" || this.currentOperand.length <= 1) {
+    if (
+      this.currentOperand === "Error!" ||
+      this.currentOperand.length <= 1 ||
+      this.currentOperand === ""
+    ) {
       this.currentOperand = "0";
     } else {
       this.currentOperand = this.currentOperand.slice(0, -1);
@@ -90,7 +109,8 @@ class Calculator {
 
 document.addEventListener("DOMContentLoaded", () => {
   const displayElement = document.getElementById("display");
-  const calculator = new Calculator(displayElement);
+  const historyElement = document.getElementById("previous-history");
+  const calculator = new Calculator(displayElement, historyElement);
 
   const buttonsContainer = document.querySelector(".buttons");
 
